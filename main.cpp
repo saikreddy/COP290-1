@@ -15,7 +15,7 @@ class Edge{
 	Vertex p1, p2;
 }
 
-class makethreeD{
+//class makethreeD{
 	top_view;
 	front_view;
 	side_view;
@@ -24,7 +24,6 @@ public :
 		int create3D( top_view, front_view, side_view){
 			return 0;
 	}
-
 
 }
 class twoDto3D
