@@ -27,6 +27,22 @@ public :
 
 
 }
+
+class top_view{
+	std::list<Vertex>;
+	std::list<Vertex,Vertex>;}
+class front_view{
+	std::list<Vertex>;
+	std::list<Vertex,Vertex>;}
+class side_view{
+	std::list<Vertex>;
+	std::list<Vertex,Vertex>;}
+
+class threeDinput{
+	std::list<Vertex>;
+	std::list<Vertex,Vertex>;
+	twoDinput create2D(void);
+}
 class twoDto3D
 {
 public :
