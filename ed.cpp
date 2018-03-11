@@ -13,6 +13,15 @@ class vertex{
 
 };
 
+class edge{
+	std::vector<vertex> v1;
+	std::vector<vertex> v2;
+
+	std::vector<edge> lines;
+
+};
+
+
 class projection{
 
 	std::vector<vertex> frontview;
