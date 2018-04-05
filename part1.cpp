@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
-#include <tuple>
+#include <sstream>
+#include <fstream>
+#include <string>
 
 using namespace std;
 
@@ -75,54 +77,73 @@ public:
 			{
 				for (int a = 0; a < fe.size(); ++a)
 				{
-					for (int b = 0; b < te.size(); ++b)
+					bool l2 = false;
+					if ((pt[s].x == fe[a].x1) && (pt[t].x == fe[a].x2) && (pt[s].y == fe[a].y1) && (pt[t].y == fe[a].y2))
 					{
-						for (int c = 0; c < se.size(); ++c)
+						ln.push_back(edge(pt[s].x,pt[s].y,pt[s].z, pt[t].x,pt[t].y,pt[t].z));
+						break;
+					}
+					else
+					{
+						for (int b = 0; b < te.size(); ++b)
 						{
-							if (((pt[s].x == fe[a].x1) && (pt[t].x == fe[a].x2) && (pt[s].y == fe[a].y1) && (pt[t].y == fe[a].y2)) ||
-							    ((pt[s].x == te[b].x1) && (pt[t].x == te[b].x2) && (pt[s].z == te[b].z1) && (pt[t].z == te[b].z2)) ||
-							    ((pt[s].y == se[c].y1) && (pt[t].y == se[c].y2) && (pt[s].z == se[c].z1) && (pt[t].z == se[c].z2)) )
+							bool l3 = false;
+							if ((pt[s].x == te[b].x1) && (pt[t].x == te[b].x2) && (pt[s].z == te[b].z1) && (pt[t].z == te[b].z2))
 							{	
+								l2 = true;
 								ln.push_back(edge(pt[s].x,pt[s].y,pt[s].z, pt[t].x,pt[t].y,pt[t].z));
+								break;
 							}
+							else
+							{
+								for (int c = 0; c < se.size(); ++c)
+								{
+									if ((pt[s].y == se[c].y1) && (pt[t].y == se[c].y2) && (pt[s].z == se[c].z1) && (pt[t].z == se[c].z2))
+									{	
+										l3 = true;
+										ln.push_back(edge(pt[s].x,pt[s].y,pt[s].z, pt[t].x,pt[t].y,pt[t].z));
+										break;
+									}
+								}
+							}
+							if (l3)
+							{	
+								//ln.push_back(edge(pt[s].x,pt[s].y,pt[s].z, pt[t].x,pt[t].y,pt[t].z));
+								break;
+							}						
 						}
+					}
+					if (l2)
+					{	
+						//ln.push_back(edge(pt[s].x,pt[s].y,pt[s].z, pt[t].x,pt[t].y,pt[t].z));
+						break;
 					}
 				}
 			}
 		}
 
-		//-------------------------------PRINT 3D VERTICES--------------------------------------
+		//-------------PRINT 3D VERTICES----------------
 		cout<<"3D points"<<endl;
 		for (int p = 0; p < pt.size(); ++p)
 		{
 			cout<<"(" <<pt[p].x <<"," <<pt[p].y <<"," <<pt[p].z <<")" <<endl;
 		}
 
+		//-------------- PRINT EDGE --------------------
+		cout<<"edge"<<endl;
+		cout<<ln.size()<<endl;
+		for (int p = 0; p < ln.size(); ++p)
+		{
+			cout<<"(" <<ln[p].x1 <<"," <<ln[p].y1 <<"," <<ln[p].z1 <<")" <<" " <<"(" <<ln[p].x2 <<"," <<ln[p].y2<<"," <<ln[p].z2 <<")" <<endl;
+		}
 	
-	 	//------------------------------- PRINT EDGE -------------------------------------------------------------------------
 
-		// cout<<"Edges"<<endl;
- 	// 	cout<<"(" <<ln[0].x1 <<"," <<ln[0].y1 <<"," <<ln[0].z1 <<")" <<" "<<"(" <<ln[0].x2 <<"," <<ln[0].y2 <<"," <<ln[0].z2 <<")" <<endl;
-		// for (int i = 1; i < ln.size(); ++i)
-		// {
-		// 	bool t = true;
-		// 	for (int j = i-1; j >= 0; --j)
-		// 	{
-		// 		if ((ln[j].x1==ln[i].x1) && (ln[j].y1==ln[i].y1) && (ln[j].z1==ln[i].z1) && (ln[j].x2==ln[i].x2) && (ln[j].y2==ln[i].y2) && (ln[j].z2==ln[i].z2))
-		// 		{
-		// 			t = false;
-		// 		}
-		// 	}
-		// 	if (t==true)
-		// 	{
-		// 		cout<<"(" <<ln[i].x1 <<"," <<ln[i].y1 <<"," <<ln[i].z1 <<")" <<" " <<"(" <<ln[i].x2 <<"," <<ln[i].y2<<"," <<ln[i].z2 <<")" <<endl;
-		// 	}
-		// }
 	}
 	
 };
 
-
+//-------------------------------  3D to 2D --------------------------------------------------========================
+//---------------------------------------------------------------------------------------------======================
 class threedtotwod{
 public:
 	std::vector<vertex> vertices;
@@ -134,9 +155,7 @@ public:
 	std::vector<vertex> side_proj;
 	std::vector<vertex> top_proj;
 
-
-
-// ------------------------------------------FRONT VIEW ----------------------------------------------------------------------
+// // ----------------------- FRONT VIEW ---------------------
 	void create_frontview (){
 		for (int i = 0; i < vertices.size(); ++i)
 		{
@@ -147,7 +166,7 @@ public:
 		print_proj(front_proj, cf);
 	}
 
-//------------------------------------------  TOP VIEW --------------------------------------------------------------
+//--------------- ----------- TOP VIEW ------------------------
 	void create_topview (){
 		for (int i = 0; i < vertices.size(); ++i)
 		{
@@ -157,7 +176,7 @@ public:
 		print_proj(top_proj, ct);
 	}
 
-//-----------------------------------------  SIDE VIEW ---------------------------------------------------------------
+//-------------------------- SIDE VIEW ----------------------
 	void create_sideview (){
 		for (int i = 0; i < vertices.size(); ++i)
 		{
@@ -167,7 +186,7 @@ public:
 		print_proj(side_proj, cs);
 	}
 
-//--------------------------------------- PRINT PROJECTIOS ------------------------------------------------------
+//------------------- PRINT PROJECTIOS -----------------
 	void print_proj(vector<vertex> v_out, vector<vertex> v){
 		v_out.push_back(vertex(v[0].x, v[0].y, v[0].z ));
 		cout<<"(" <<v[0].x <<"," <<v[0].y <<"," <<v[0].z <<")" <<endl;
@@ -195,55 +214,92 @@ public:
 
 int main()
 {
-	
-	twodtothreed obj;
-	threedtotwod obj1;
-	obj.fv.push_back(vertex(1, 1, 0));
-	obj.fv.push_back(vertex(1, 2, 0));
-	obj.fv.push_back(vertex(2, 1, 0));
-	obj.fv.push_back(vertex(2, 2, 0));
+	int i;
 
-	obj.tv.push_back(vertex(1, 0, 1));
-	obj.tv.push_back(vertex(1, 0, 2));
-	obj.tv.push_back(vertex(2, 0, 1));
-	obj.tv.push_back(vertex(2, 0, 2));
+	cout<<"Press 1 for 2D to 3D"<<endl;
+	cout<<"Press 2 for 3D to 2D"<<endl;
+	cin>> i;
 
-	obj.sv.push_back(vertex(0, 1, 1));
-	obj.sv.push_back(vertex(0, 2, 1));
-	obj.sv.push_back(vertex(0, 1, 2));
-	obj.sv.push_back(vertex(0, 2, 2));
+	if (i==1)
+	{
+		twodtothreed obj;
 
-	obj.fe.push_back(edge(1, 1, 0, 1, 2, 0));
-	obj.fe.push_back(edge(1, 2, 0, 2, 1, 0));
-	obj.fe.push_back(edge(2, 1, 0, 2, 2, 0));
-	obj.fe.push_back(edge(2, 2, 0, 1, 1, 0));
+		std::ifstream infile("in2d.txt");
+		std::string line;
+		while (std::getline(infile, line))
+		{
+		    std::istringstream iss(line);
+		    int a, b, c;
+		    if (!(iss >> a >> b >> c)) { break; } // error
 
-	obj.te.push_back(edge(1, 0, 1, 1, 0, 2));
-	obj.te.push_back(edge(1, 0, 2, 2, 0, 1));
-	obj.te.push_back(edge(2, 0, 1, 2, 0, 2));
-	obj.te.push_back(edge(2, 0, 2, 1, 0, 1));
+			obj.fv.push_back(vertex(a, b, c));		   
+		}
+		while (std::getline(infile, line))
+		{
+		    std::istringstream iss(line);
+		    int a, b, c;
+		    if (!(iss >> a >> b >> c)) { break; } // error
 
-	obj.se.push_back(edge(0, 1, 1, 0, 2, 1));
-	obj.se.push_back(edge(0, 2, 1, 0, 1, 2));
-	obj.se.push_back(edge(0, 1, 2, 0, 2, 2));
-	obj.se.push_back(edge(0, 2, 2, 0, 1, 1));
+		    obj.tv.push_back(vertex(a, b, c));
+		}
 
-	obj.crete3D();
+		while (std::getline(infile, line))
+		{
+		    std::istringstream iss(line);
+		    int a, b, c;
+		    if (!(iss >> a >> b >> c)) { break; } // error
 
-	obj1.vertices.push_back(vertex(1, 1, 1));
-	obj1.vertices.push_back(vertex(1, 1, 2));
-	obj1.vertices.push_back(vertex(1, 2, 1));
-	obj1.vertices.push_back(vertex(2, 1, 1));
-	obj1.vertices.push_back(vertex(1, 2, 2));
-	obj1.vertices.push_back(vertex(2, 2, 1));
-	obj1.vertices.push_back(vertex(2, 1, 2));
-	obj1.vertices.push_back(vertex(2, 2, 2));
+		    obj.sv.push_back(vertex(a, b, c));
+		}
 
-	obj1.create_frontview();
-	obj1.create_topview();
-	obj1.create_sideview();	
+		while (std::getline(infile, line))
+		{
+		    std::istringstream iss(line);
+		    int a, b , c, d, e, f;
+		    if (!(iss >> a >> b >> c >> d >> e >> f)) { break; } // error
 
+		    obj.fe.push_back(edge(a, b, c, d, e, f));
+		}
 
-	return 0;
+		while (std::getline(infile, line))
+		{
+		    std::istringstream iss(line);
+		    int a, b , c, d, e, f;
+		    if (!(iss >> a >> b >> c >> d >> e >> f)) { break; } // error
+
+		    obj.te.push_back(edge(a, b, c, d, e, f));
+		}
+
+		while (std::getline(infile, line))
+		{
+		    std::istringstream iss(line);
+		    int a, b , c, d, e, f;
+		    if (!(iss >> a >> b >> c >> d >> e >> f)) { break; } // error
+
+		    obj.se.push_back(edge(a, b, c, d, e, f));
+		}
+
+		obj.crete3D();
+	}
+
+	else if(i==2)
+	{
+		std::ifstream infile("in3d.txt");
+		threedtotwod obj1;
+		int x, y, z;
+	 	while (infile >> x >> y >>z)
+		{
+			if (!(infile >> x >> y >> z)) { break; }
+			obj1.vertices.push_back(vertex(x, y, z));
+		}
+
+		obj1.create_frontview();
+		obj1.create_topview();
+		obj1.create_sideview();	
+
+	}
+
+	else{cout<<"Please enter correct value"<<endl;}
+
 		
 }
